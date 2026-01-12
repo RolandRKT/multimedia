@@ -1,0 +1,18 @@
+Start testing: Dec 02 09:31 CET
+----------------------------------------------------------
+1/1 Testing: SimpleTest
+1/1 Test: SimpleTest
+Command: "/home/iut45/Etudiants/o22203444/Documents/sensib_media/TD3/TDDepart/b/td"
+Directory: /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD3/TDDepart/b
+"SimpleTest" start time: Dec 02 09:31 CET
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   2.89 sec
+----------------------------------------------------------
+Test Passed.
+"SimpleTest" end time: Dec 02 09:31 CET
+"SimpleTest" time elapsed: 00:00:02
+----------------------------------------------------------
+
+End testing: Dec 02 09:31 CET
