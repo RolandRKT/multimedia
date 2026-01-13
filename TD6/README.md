@@ -26,6 +26,8 @@ ou bien:
 3. je supprime/commente les variables qui font doublons.
 4. j'ajoute la variable globale #define NBMESHES 4
 5. création de la fonction displayMesh
+6. mise à jour de la fonction shaderProg initShaders(std::string shadVert, std::string shadFrag)
+
 
 
 
