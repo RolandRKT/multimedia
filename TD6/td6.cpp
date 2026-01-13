@@ -438,15 +438,12 @@ int main(int argc, char *argv[])
 #if defined(__APPLE__) && defined(ENABLE_SHADERS)
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_3_2_CORE_PROFILE);
 #else
-
     glutInitContextVersion(3, 2);
-    // glutInitContextVersion( 4, 5 );
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glewInit();
 #endif
 
     glutInitWindowSize(640, 480);
-
     glutCreateWindow(argv[0]);
 
     glutDisplayFunc(display);
@@ -454,21 +451,41 @@ int main(int argc, char *argv[])
     glutIdleFunc(idle);
     glutSpecialFunc(special);
 
-    // Initialisation de la bibliothèque GLEW.
 #if not defined(__APPLE__)
     glewInit();
 #endif
 
     glEnable(GL_DEPTH_TEST);
     check_gl_error();
-    initShaders();
+
+    // ========== INITIALISATION DES 4 MAILLAGES ==========
+    std::cout << "=== Initialisation des shaders et maillages ===" << std::endl;
+
+    // Maillage 0 : space_shuttle2 avec shader basic
+    shaders[0] = initShaders("/shaders/basic.vert.glsl", "/shaders/basic.frag.glsl");
+    maillages[0] = initVAOs(shaders[0], "/meshes/space_shuttle2.off");
+
+    // Maillage 1 : space_station2 avec shader basic
+    shaders[1] = initShaders("/shaders/basic.vert.glsl", "/shaders/basic.frag.glsl");
+    maillages[1] = initVAOs(shaders[1], "/meshes/space_station2.off");
+
+    // Maillage 2 : milleniumfalcon avec shader basic
+    shaders[2] = initShaders("/shaders/basic.vert.glsl", "/shaders/basic.frag.glsl");
+    maillages[2] = initVAOs(shaders[2], "/meshes/milleniumfalcon.off");
+
+    // Maillage 3 : rabbit avec shader basic
+    shaders[3] = initShaders("/shaders/basic.vert.glsl", "/shaders/basic.frag.glsl");
+    maillages[3] = initVAOs(shaders[3], "/meshes/rabbit.off");
+
     check_gl_error();
-    initVAOs();
-    check_gl_error();
+
     rep.init();
+
     check_gl_error();
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    std::cout << "=== Affichage en cours ===" << std::endl;
 
     glutMainLoop();
 
