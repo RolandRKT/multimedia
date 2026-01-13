@@ -1,21 +1,19 @@
-Start testing: Jan 07 12:05 CET
+Start testing: Jan 13 08:43 CET
 ----------------------------------------------------------
 1/1 Testing: SimpleTest
 1/1 Test: SimpleTest
 Command: "/home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b/td"
 Directory: /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b
-"SimpleTest" start time: Jan 07 12:05 CET
+"SimpleTest" start time: Jan 13 08:43 CET
 Output:
 ----------------------------------------------------------
-Loading /meshes/space_shuttle2.off - Triangles: 3952
-Loading /meshes/space_station2.off - Triangles: 10237
-Loading /meshes/milleniumfalcon.off - Triangles: 10237
+39520.00447504
 <end of output>
-Test time =   0.20 sec
+Test time =   1.61 sec
 ----------------------------------------------------------
-Test Failed.
-"SimpleTest" end time: Jan 07 12:05 CET
-"SimpleTest" time elapsed: 00:00:00
+Test Passed.
+"SimpleTest" end time: Jan 13 08:43 CET
+"SimpleTest" time elapsed: 00:00:01
 ----------------------------------------------------------
 
-End testing: Jan 07 12:05 CET
+End testing: Jan 13 08:43 CET
