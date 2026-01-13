@@ -1,19 +1,19 @@
-Start testing: Jan 13 08:43 CET
+Start testing: Jan 13 08:45 CET
 ----------------------------------------------------------
 1/1 Testing: SimpleTest
 1/1 Test: SimpleTest
 Command: "/home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b/td"
 Directory: /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b
-"SimpleTest" start time: Jan 13 08:43 CET
+"SimpleTest" start time: Jan 13 08:45 CET
 Output:
 ----------------------------------------------------------
 39520.00447504
 <end of output>
-Test time =   1.61 sec
+Test time =  11.99 sec
 ----------------------------------------------------------
 Test Passed.
-"SimpleTest" end time: Jan 13 08:43 CET
-"SimpleTest" time elapsed: 00:00:01
+"SimpleTest" end time: Jan 13 08:45 CET
+"SimpleTest" time elapsed: 00:00:11
 ----------------------------------------------------------
 
-End testing: Jan 13 08:43 CET
+End testing: Jan 13 08:45 CET
