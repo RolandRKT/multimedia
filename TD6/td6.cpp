@@ -25,6 +25,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#define NBMESHES 4
+
 repere rep(1.0);
 
 // Ne servent plus à rien car maintenant on utilise des structures pour les shaders et les maillages
@@ -76,6 +78,33 @@ struct maillage
 
 } maillages[NBMESHES];
 
+// Affiche un maillage avec sa transformation
+void displayMesh(maillage &m, glm::mat4 model)
+{
+    // 1. Activation du shader
+    glUseProgram(m.shader.progid);
+
+    // 2. Application des transformations
+    // D'abord on centre l'objet à l'origine et on le scale
+    glm::mat4 localTransform = glm::mat4(1.0f);
+    localTransform = glm::translate(localTransform, glm::vec3(-m.x, -m.y, -m.z));
+    localTransform = glm::scale(localTransform, glm::vec3(m.scale));
+    
+    // Puis on combine avec la position dans la scène (model)
+    glm::mat4 finalModel = model * localTransform;
+
+    // 3. Envoi des variables Uniform
+    glUniformMatrix4fv(m.shader.mid, 1, GL_FALSE, &finalModel[0][0]);
+    glUniformMatrix4fv(m.shader.vid, 1, GL_FALSE, &view[0][0]);
+    glUniformMatrix4fv(m.shader.pid, 1, GL_FALSE, &proj[0][0]);
+
+    // 4. Bind du VAO
+    glBindVertexArray(m.vaoids);
+
+    // 5. Dessin
+    glDrawElements(GL_TRIANGLES, m.nbtriangles * 3, GL_UNSIGNED_INT, 0);
+}
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -107,11 +136,11 @@ void display()
 
 void idle()
 {
-    angle += 0.0001f;
-    if (angle >= 360.0f)
-    {
-        angle = 0.0f;
-    }
+    // angle += 0.0001f;
+    // if (angle >= 360.0f)
+    // {
+    //     angle = 0.0f;
+    // }
 
     //    if( scale <= 0.0f )
     //    {

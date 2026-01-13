@@ -24,6 +24,8 @@ ou bien:
 1. j'ai ajouté les structures.
 2. j'ai remplacé la fonction display par celle donné dans le TD.
 3. je supprime/commente les variables qui font doublons.
+4. j'ajoute la variable globale #define NBMESHES 4
+5. création de la fonction displayMesh
 
 
 
