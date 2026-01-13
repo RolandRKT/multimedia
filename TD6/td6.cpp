@@ -27,28 +27,29 @@
 
 repere rep(1.0);
 
-unsigned int progid;
-unsigned int mid;
-unsigned int vid;
-unsigned int pid;
+// Ne servent plus à rien car maintenant on utilise des structures pour les shaders et les maillages
+// unsigned int progid;
+// unsigned int mid;
+// unsigned int vid;
+// unsigned int pid;
 
 // Matrices 4x4 contenant les transformations.
 glm::mat4 model;
 glm::mat4 view;
 glm::mat4 proj;
-glm::mat4 m;
-glm::mat4 v;
-glm::mat4 p;
+// glm::mat4 m;
+// glm::mat4 v;
+// glm::mat4 p;
 
-float angle = 0.0f;
-float scale = 0.0f;
-float inc = 0.1f;
+// float angle = 0.0f;
+// float scale = 0.0f;
+// float inc = 0.1f;
 
-unsigned int vaoids[1];
+// unsigned int vaoids[1];
 
-unsigned int nbtriangles;
+// unsigned int nbtriangles;
 
-float x, y, z;
+// float x, y, z;
 
 std::array<float, 3> eye = {0.0f, 0.0f, 5.0f};
 
@@ -78,46 +79,28 @@ struct maillage
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    //  Positionnement de la caméra en ( 0.0f, 0.0f, 5.0f ),
-    //  on regarde en direction du point ( 0.0f, 0.0f, 0.0f ),
-    //  la tête est orienté suivant vers le haut l'axe y ( 0.0f, 1.0f, 0.0f ).
-    view = glm::lookAt(glm::vec3(eye[0], eye[1], eye[2]), glm::vec3(eye[0], eye[1], eye[2] - 1.0), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(glm::vec3(eye[0], eye[1], eye[2]),
+                       glm::vec3(eye[0], eye[1], eye[2] - 1.0f),
+                       glm::vec3(0.0f, 1.0f, 0.0f));
 
-    // initialisation de la matrice de modelisation
+    float decal = 1.25f;
+
     model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-decal, -decal, 0.0f));
+    displayMesh(maillages[0], model);
 
-    // On recale le maillage à l'origine du repère
-    model = glm::translate(glm::mat4(1.0f), glm::vec3(-x, -y, -z)) * model;
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(decal, decal, 0.0f));
+    displayMesh(maillages[1], model);
 
-    // Le modèle est mis à l'échelle
-    model = glm::scale(glm::mat4(1.0f), glm::vec3(scale * 3.5)) * model;
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-decal, decal, 0.0f));
+    displayMesh(maillages[2], model);
 
-    // Le modele subit une rotation suivant l'axe z.
-    glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::degrees(angle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-    model = glm::rotate(glm::mat4(1.0f), glm::degrees(angle), glm::vec3(0.0f, 1.0f, 0.0f)) * model;
-
-    // Calcul de la matrice mvp.
-    m = model;
-    v = view;
-    p = proj;
-
-    // tester aussi:  (quelle différence?)
-    // rep.trace_repere(proj*  view *rot);
-    rep.trace_repere(proj * view);
-
-    glUseProgram(progid); // Choix du shader à appliquer.
-
-    glUniformMatrix4fv(mid, 1, GL_FALSE, &m[0][0]); // Passage de la matrice mvp au shader.
-    glUniformMatrix4fv(vid, 1, GL_FALSE, &v[0][0]); // Passage de la matrice mvp au shader.
-    glUniformMatrix4fv(pid, 1, GL_FALSE, &p[0][0]); // Passage de la matrice mvp au shader.
-
-    glBindVertexArray(vaoids[0]); // Choix du vao
-
-    glDrawElements(GL_TRIANGLES, nbtriangles * 3, GL_UNSIGNED_INT, 0);
-
-    check_gl_error(); // pour le debugage d'openGL
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(decal, -decal, 0.0f));
+    model = glm::scale(model, glm::vec3(0.70f));
+    displayMesh(maillages[3], model);
 
     glutSwapBuffers();
 }
