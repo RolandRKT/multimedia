@@ -183,39 +183,42 @@ void special(int key, int x, int y)
     glutPostRedisplay();
 }
 
-void initVAOs()
+maillage initVAOs(shaderProg shader, std::string meshFile)
 {
+    maillage currentMaillage;
+    currentMaillage.shader = shader; // On lui associe son shader
+
     unsigned int vboids[4];
 
-    std::ifstream ifs(concat(MY_SHADER_PATH, "/meshes/space_shuttle2.off"));
+    // Ouverture du fichier de maillage
+    std::ifstream ifs(MY_SHADER_PATH + meshFile);
     if (!ifs)
     {
-        throw std::runtime_error("can't find the meshe!! Check the name and the path of this file? ");
+        throw std::runtime_error("Cannot find mesh file: " + meshFile);
     }
 
     std::string off;
-
     unsigned int nbpoints, tmp;
 
     ifs >> off;
     ifs >> nbpoints;
-    ifs >> nbtriangles;
+    ifs >> currentMaillage.nbtriangles; // On stocke dans la structure
     ifs >> tmp;
 
-    std::cout << nbtriangles;
+    std::cout << "Loading " << meshFile << " - Triangles: " << currentMaillage.nbtriangles << std::endl;
+
     std::vector<float> vertices(nbpoints * 3);
-    std::vector<float> colors(nbpoints * 3);
-    std::vector<unsigned int> indices(nbtriangles * 3);
+    std::vector<unsigned int> indices(currentMaillage.nbtriangles * 3);
     std::vector<float> normals(nbpoints * 3);
 
-    // std::fill( std::begin( normals ), std::end( normals ), 0.0f );
-
+    // Lecture des vertices
     for (unsigned int i = 0; i < vertices.size(); ++i)
     {
         ifs >> vertices[i];
     }
 
-    for (unsigned int i = 0; i < nbtriangles; ++i)
+    // Lecture des indices
+    for (unsigned int i = 0; i < currentMaillage.nbtriangles; ++i)
     {
         ifs >> tmp;
         ifs >> indices[i * 3];
@@ -223,15 +226,14 @@ void initVAOs()
         ifs >> indices[i * 3 + 2];
     }
 
-    /**
-     * Calcul de la boîte englobante du modèle
-     */
+    // Calcul de la boîte englobante
     float dx, dy, dz;
     float xmin, xmax, ymin, ymax, zmin, zmax;
 
     xmin = xmax = vertices[0];
     ymin = ymax = vertices[1];
     zmin = zmax = vertices[2];
+
     for (unsigned int i = 1; i < nbpoints; ++i)
     {
         if (xmin > vertices[i * 3])
@@ -248,24 +250,24 @@ void initVAOs()
             zmax = vertices[i * 3 + 2];
     }
 
-    // calcul du centre de la boîte englobante
+    // Centre de la boîte (stocké dans la structure)
+    currentMaillage.x = (xmax + xmin) / 2.0f;
+    currentMaillage.y = (ymax + ymin) / 2.0f;
+    currentMaillage.z = (zmax + zmin) / 2.0f;
 
-    x = (xmax + xmin) / 2.0f;
-    y = (ymax + ymin) / 2.0f;
-    z = (zmax + zmin) / 2.0f;
-
-    // calcul des dimensions de la boîte englobante
-
+    // Dimensions
     dx = xmax - xmin;
     dy = ymax - ymin;
     dz = zmax - zmin;
 
-    // calcul du coefficient de mise à l'échelle
+    // Scale pour normaliser la taille (stocké dans la structure)
+    currentMaillage.scale = 1.0f / fmax(dx, fmax(dy, dz));
 
-    scale = 1.0f / fmax(dx, fmax(dy, dz));
-    std::cout << scale;
+    std::cout << "  Scale: " << currentMaillage.scale
+              << " Center: (" << currentMaillage.x << ", "
+              << currentMaillage.y << ", " << currentMaillage.z << ")" << std::endl;
 
-    // Calcul des normales.
+    // Calcul des normales
     for (std::size_t i = 0; i < indices.size(); i += 3)
     {
         auto x0 = vertices[3 * indices[i]] - vertices[3 * indices[i + 1]];
@@ -298,6 +300,7 @@ void initVAOs()
         normals[3 * indices[i + 2] + 2] += z01;
     }
 
+    // Normalisation des normales
     for (std::size_t i = 0; i < normals.size(); i += 3)
     {
         auto &x = normals[i];
@@ -305,56 +308,38 @@ void initVAOs()
         auto &z = normals[i + 2];
 
         auto norminv = 1.0f / std::sqrt(x * x + y * y + z * z);
-
         x *= norminv;
         y *= norminv;
         z *= norminv;
     }
 
-    check_gl_error();
-    // Génération d'un Vertex Array Object contenant 3 Vertex Buffer Objects.
-    glGenVertexArrays(1, &vaoids[0]);
-    glBindVertexArray(vaoids[0]);
+    // Création du VAO (ATTENTION: & devant currentMaillage.vaoids)
+    glGenVertexArrays(1, &currentMaillage.vaoids);
+    glBindVertexArray(currentMaillage.vaoids);
 
-    // Génération de 4 VBO.
     glGenBuffers(4, vboids);
 
-    // VBO contenant les sommets.
-
+    // VBO vertices
     glBindBuffer(GL_ARRAY_BUFFER, vboids[0]);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-
-    // L'attribut in_pos du vertex shader est associé aux données de ce VBO.
-    auto pos = glGetAttribLocation(progid, "in_pos");
+    auto pos = glGetAttribLocation(shader.progid, "in_pos");
     glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(pos);
-    check_gl_error();
-    // VBO contenant les couleurs.
-    /*
-        glBindBuffer( GL_ARRAY_BUFFER, vboids[ 1 ] );
-        glBufferData( GL_ARRAY_BUFFER, colors.size() * sizeof( float ), colors.data(), GL_STATIC_DRAW );
 
-        // L'attribut in_color du vertex shader est associé aux données de ce VBO.
-        auto color = glGetAttribLocation( progid, "in_color" );
-        glVertexAttribPointer( color, 3, GL_FLOAT, GL_FALSE, 0, 0 );
-        glEnableVertexAttribArray( color );
-    */
-    check_gl_error();
-    // VBO contenant les indices.
-
+    // VBO indices
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboids[2]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-    check_gl_error();
-    // VBO contenant les normales.
 
+    // VBO normales
     glBindBuffer(GL_ARRAY_BUFFER, vboids[3]);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float), normals.data(), GL_STATIC_DRAW);
-
-    auto normal = glGetAttribLocation(progid, "in_normal");
+    auto normal = glGetAttribLocation(shader.progid, "in_normal");
     glVertexAttribPointer(normal, 3, GL_FLOAT, GL_TRUE, 0, 0);
     glEnableVertexAttribArray(normal);
-    check_gl_error();
+
     glBindVertexArray(0);
+
+    return currentMaillage; // On retourne la structure
 }
 
 // ========== FONCTION initShaders ==========
