@@ -89,7 +89,7 @@ void displayMesh(maillage &m, glm::mat4 model)
     glm::mat4 localTransform = glm::mat4(1.0f);
     localTransform = glm::translate(localTransform, glm::vec3(-m.x, -m.y, -m.z));
     localTransform = glm::scale(localTransform, glm::vec3(m.scale));
-    
+
     // Puis on combine avec la position dans la scène (model)
     glm::mat4 finalModel = model * localTransform;
 
@@ -357,16 +357,26 @@ void initVAOs()
     glBindVertexArray(0);
 }
 
-void initShaders()
+// ========== FONCTION initShaders ==========
+// Compile et lie les shaders, retourne un shaderProg
+shaderProg initShaders(std::string shadVert, std::string shadFrag)
 {
+    shaderProg sp; // On crée la structure à retourner
     unsigned int vsid, fsid;
     int status;
     int logsize;
     std::string log;
 
-    std::ifstream vs_ifs(concat(MY_SHADER_PATH, "/shaders/basic.vert.glsl"));
-    std::ifstream fs_ifs(concat(MY_SHADER_PATH, "/shaders/basic.frag.glsl"));
+    // Ouverture des fichiers shaders
+    std::ifstream vs_ifs(MY_SHADER_PATH + shadVert);
+    std::ifstream fs_ifs(MY_SHADER_PATH + shadFrag);
 
+    if (!vs_ifs || !fs_ifs)
+    {
+        throw std::runtime_error("Fichiers shaders non trouvé.");
+    }
+
+    // Lecture du vertex shader
     auto begin = vs_ifs.tellg();
     vs_ifs.seekg(0, std::ios::end);
     auto end = vs_ifs.tellg();
@@ -377,6 +387,7 @@ void initShaders()
     vs.resize(size);
     vs_ifs.read(&vs[0], size);
 
+    // Lecture du fragment shader
     begin = fs_ifs.tellg();
     fs_ifs.seekg(0, std::ios::end);
     end = fs_ifs.tellg();
@@ -387,14 +398,13 @@ void initShaders()
     fs.resize(size);
     fs_ifs.read(&fs[0], size);
 
+    // Compilation du vertex shader
     vsid = glCreateShader(GL_VERTEX_SHADER);
     char const *vs_char = vs.c_str();
     glShaderSource(vsid, 1, &vs_char, nullptr);
     glCompileShader(vsid);
 
-    // Get shader compilation status.
     glGetShaderiv(vsid, GL_COMPILE_STATUS, &status);
-
     if (!status)
     {
         std::cerr << "Error: vertex shader compilation failed.\n";
@@ -404,14 +414,13 @@ void initShaders()
         std::cerr << log << std::endl;
     }
 
+    // Compilation du fragment shader
     fsid = glCreateShader(GL_FRAGMENT_SHADER);
     char const *fs_char = fs.c_str();
     glShaderSource(fsid, 1, &fs_char, nullptr);
     glCompileShader(fsid);
 
-    // Get shader compilation status.
     glGetShaderiv(fsid, GL_COMPILE_STATUS, &status);
-
     if (!status)
     {
         std::cerr << "Error: fragment shader compilation failed.\n";
@@ -421,18 +430,21 @@ void initShaders()
         std::cerr << log << std::endl;
     }
 
-    progid = glCreateProgram();
+    // Création et linkage du programme shader
+    sp.progid = glCreateProgram();
+    glAttachShader(sp.progid, vsid);
+    glAttachShader(sp.progid, fsid);
+    glLinkProgram(sp.progid);
 
-    glAttachShader(progid, vsid);
-    glAttachShader(progid, fsid);
+    // Récupération des locations des uniforms (dans la STRUCTURE sp)
+    sp.mid = glGetUniformLocation(sp.progid, "m");
+    sp.vid = glGetUniformLocation(sp.progid, "v");
+    sp.pid = glGetUniformLocation(sp.progid, "p");
+    sp.LightID = glGetUniformLocation(sp.progid, "LightPos");
 
-    glLinkProgram(progid);
+    std::cout << "Shader compiled: " << shadVert << " + " << shadFrag << std::endl;
 
-    glUseProgram(progid);
-
-    mid = glGetUniformLocation(progid, "m");
-    vid = glGetUniformLocation(progid, "v");
-    pid = glGetUniformLocation(progid, "p");
+    return sp;
 }
 
 int main(int argc, char *argv[])
