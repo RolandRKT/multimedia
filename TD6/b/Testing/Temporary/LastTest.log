@@ -1,10 +1,10 @@
-Start testing: Jan 16 18:41 CET
+Start testing: Jan 16 19:01 CET
 ----------------------------------------------------------
 1/1 Testing: SimpleTest
 1/1 Test: SimpleTest
 Command: "/home/eliyhuw/Documents/iut/multimedia/TD6/b/td"
 Directory: /home/eliyhuw/Documents/iut/multimedia/TD6/b
-"SimpleTest" start time: Jan 16 18:41 CET
+"SimpleTest" start time: Jan 16 19:01 CET
 Output:
 ----------------------------------------------------------
 === Initialisation des shaders et maillages ===
@@ -23,11 +23,11 @@ Loading /meshes/rabbit.off - Triangles: 8100
   Scale: 6.42372 Center: (-0.0168535, 0.110119, -0.00152)
 === Affichage en cours ===
 <end of output>
-Test time =  44.49 sec
+Test time =   7.53 sec
 ----------------------------------------------------------
 Test Passed.
-"SimpleTest" end time: Jan 16 18:41 CET
-"SimpleTest" time elapsed: 00:00:44
+"SimpleTest" end time: Jan 16 19:01 CET
+"SimpleTest" time elapsed: 00:00:07
 ----------------------------------------------------------
 
-End testing: Jan 16 18:41 CET
+End testing: Jan 16 19:01 CET
