@@ -108,22 +108,43 @@ void display()
                        glm::vec3(0.0f, 1.0f, 0.0f));
 
     float decal = 1.25f;
+    float globalScale = 2.0f;
 
+    //pour me repérer
+    // --- Objet 0 (Bas Gauche) ---
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-decal, -decal, 0.0f));
+    model = glm::scale(model, glm::vec3(globalScale));
+    // Utilisation de maillages[0].angle
+    model = glm::rotate(model, glm::radians(maillages[0].angle), glm::vec3(0.0f, 1.0f, 0.0f)); 
+    model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     displayMesh(maillages[0], model);
 
+    // --- Objet 1 (Haut Droite) ---
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(decal, decal, 0.0f));
+    model = glm::scale(model, glm::vec3(globalScale));
+    // Utilisation de maillages[1].angle
+    model = glm::rotate(model, glm::radians(maillages[1].angle), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     displayMesh(maillages[1], model);
 
+    // --- Objet 2 (Haut Gauche) ---
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-decal, decal, 0.0f));
+    model = glm::scale(model, glm::vec3(globalScale));
+    // Utilisation de maillages[2].angle
+    model = glm::rotate(model, glm::radians(maillages[2].angle), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     displayMesh(maillages[2], model);
 
+    // --- Objet 3 (Bas Droite) ---
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(decal, -decal, 0.0f));
-    model = glm::scale(model, glm::vec3(0.70f));
+    model = glm::scale(model, glm::vec3(globalScale));
+    // Utilisation de maillages[3].angle
+    model = glm::rotate(model, glm::radians(maillages[3].angle), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     displayMesh(maillages[3], model);
 
     glutSwapBuffers();
@@ -131,23 +152,13 @@ void display()
 
 void idle()
 {
-    // angle += 0.0001f;
-    // if (angle >= 360.0f)
-    // {
-    //     angle = 0.0f;
-    // }
-
-    //    if( scale <= 0.0f )
-    //    {
-    //        inc = 0.1f;
-    //    }
-    //    else if( scale > 2.0f )
-    //    {
-    //        inc = -0.1f;
-    //    }
-    //
-    //    scale += inc;
-
+    // On fait tourner chaque maillage
+    for(int i = 0; i < NBMESHES; i++) {
+        maillages[i].angle += 0.5f; //pour varier la vitesse
+        if (maillages[i].angle >= 360.0f) {
+            maillages[i].angle -= 360.0f;
+        }
+    }
     glutPostRedisplay();
 }
 
@@ -456,20 +467,23 @@ int main(int argc, char *argv[])
     // ========== INITIALISATION DES 4 MAILLAGES ==========
     std::cout << "=== Initialisation des shaders et maillages ===" << std::endl;
 
-    // Maillage 0 : space_shuttle2 avec shader basic
-    shaders[0] = initShaders("/shaders/basic.vert.glsl", "/shaders/basic.frag.glsl");
+    // ========== INITIALISATION DES 4 MAILLAGES ==========
+    std::cout << "=== Initialisation des shaders et maillages ===" << std::endl;
+
+    // Maillage 0 : Space Shuttle (en bas à gauche) -> Shader Phong Classique (Gris/Blanc)
+    shaders[0] = initShaders("/shaders/phong.vert.glsl", "/shaders/phong.frag.glsl");
     maillages[0] = initVAOs(shaders[0], "/meshes/space_shuttle2.off");
 
-    // Maillage 1 : space_station2 avec shader basic
-    shaders[1] = initShaders("/shaders/basic.vert.glsl", "/shaders/basic.frag.glsl");
+    // Maillage 1 : Space Station (en haut à droite) -> Shader Toon (Bleu)
+    shaders[1] = initShaders("/shaders/phong.vert.glsl", "/shaders/toon.frag.glsl");
     maillages[1] = initVAOs(shaders[1], "/meshes/space_station2.off");
 
-    // Maillage 2 : milleniumfalcon avec shader basic
-    shaders[2] = initShaders("/shaders/basic.vert.glsl", "/shaders/basic.frag.glsl");
+    // Maillage 2 : Millenium Falcon (en haut à gauche) -> Shader Phong Vert
+    shaders[2] = initShaders("/shaders/phong.vert.glsl", "/shaders/phongVert.frag.glsl");
     maillages[2] = initVAOs(shaders[2], "/meshes/milleniumfalcon.off");
 
-    // Maillage 3 : rabbit avec shader basic
-    shaders[3] = initShaders("/shaders/basic.vert.glsl", "/shaders/basic.frag.glsl");
+    // Maillage 3 : Rabbit (en bas à droite) -> Shader Phong Rouge
+    shaders[3] = initShaders("/shaders/phong.vert.glsl", "/shaders/phongRouge.frag.glsl");
     maillages[3] = initVAOs(shaders[3], "/meshes/rabbit.off");
 
     check_gl_error();

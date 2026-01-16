@@ -31,7 +31,9 @@ ou bien:
 6. mise à jour de la fonction shaderProg initShaders(std::string shadVert, std::string shadFrag)
 7. initVAOs mis à jour
 8. Modification du main
-
+9. Correction de la fonction displayMesh voir correctif.md
+10. J'ai ajouté la transformation scale pour ressembler à la vidéo du TD
+11. J'ai enfin ajouté la rotation en me servant de l'angle que chaque maillage possède (j'ai joué dessus pour les faire tourner plutot que d'utiliser la variable globale)
 
 
 
