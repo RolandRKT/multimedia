@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6
+CMAKE_SOURCE_DIR = /home/eliyhuw/Documents/iut/multimedia/TD6
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b
+CMAKE_BINARY_DIR = /home/eliyhuw/Documents/iut/multimedia/TD6/b
 
 # Utility rule file for check.
 
@@ -82,6 +82,6 @@ CMakeFiles/check.dir/clean:
 .PHONY : CMakeFiles/check.dir/clean
 
 CMakeFiles/check.dir/depend:
-	cd /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6 /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6 /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b/CMakeFiles/check.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/eliyhuw/Documents/iut/multimedia/TD6/b && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/eliyhuw/Documents/iut/multimedia/TD6 /home/eliyhuw/Documents/iut/multimedia/TD6 /home/eliyhuw/Documents/iut/multimedia/TD6/b /home/eliyhuw/Documents/iut/multimedia/TD6/b /home/eliyhuw/Documents/iut/multimedia/TD6/b/CMakeFiles/check.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/check.dir/depend
 

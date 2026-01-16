@@ -2,9 +2,11 @@ Pour compiler ce caneva:
 
 installer les paquetages suivants:
 
+sudo apt update
 sudo apt-get  install  cmake freeglut3-dev build-essential
 sudo apt-get install libglew-dev
 sudo apt-get install -y libglm-dev
+sudo apt install libopencv-dev
 
 puis: 
 mkdir BUILD

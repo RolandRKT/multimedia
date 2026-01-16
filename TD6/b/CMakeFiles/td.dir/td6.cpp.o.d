@@ -1,5 +1,5 @@
 CMakeFiles/td.dir/td6.cpp.o: \
- /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/td6.cpp \
+ /home/eliyhuw/Documents/iut/multimedia/TD6/td6.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/13/iostream \
  /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -167,9 +167,9 @@ CMakeFiles/td.dir/td6.cpp.o: \
  /usr/include/GL/freeglut_std.h /usr/include/c++/13/stdlib.h \
  /usr/include/GL/freeglut.h /usr/include/GL/freeglut_ext.h \
  /usr/include/GL/freeglut_ucall.h \
- /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/b/config.h \
- /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/GLError.h \
- /home/iut45/Etudiants/o22203444/Documents/sensib_media/TD6/repere.h \
+ /home/eliyhuw/Documents/iut/multimedia/TD6/b/config.h \
+ /home/eliyhuw/Documents/iut/multimedia/TD6/GLError.h \
+ /home/eliyhuw/Documents/iut/multimedia/TD6/repere.h \
  /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
  /usr/include/c++/13/cmath /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/math-vector.h \

@@ -79,22 +79,17 @@ struct maillage
 } maillages[NBMESHES];
 
 // Affiche un maillage avec sa transformation
-void displayMesh(maillage &m, glm::mat4 model)
+void displayMesh(maillage &m, glm::mat4 modelMatrix)
 {
     // 1. Activation du shader
     glUseProgram(m.shader.progid);
 
     // 2. Application des transformations
-    // D'abord on centre l'objet à l'origine et on le scale
-    glm::mat4 localTransform = glm::mat4(1.0f);
-    localTransform = glm::translate(localTransform, glm::vec3(-m.x, -m.y, -m.z));
-    localTransform = glm::scale(localTransform, glm::vec3(m.scale));
-
-    // Puis on combine avec la position dans la scène (model)
-    glm::mat4 finalModel = model * localTransform;
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(m.scale));
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(-m.x, -m.y, -m.z));
 
     // 3. Envoi des variables Uniform
-    glUniformMatrix4fv(m.shader.mid, 1, GL_FALSE, &finalModel[0][0]);
+    glUniformMatrix4fv(m.shader.mid, 1, GL_FALSE, &modelMatrix[0][0]);
     glUniformMatrix4fv(m.shader.vid, 1, GL_FALSE, &view[0][0]);
     glUniformMatrix4fv(m.shader.pid, 1, GL_FALSE, &proj[0][0]);
 
