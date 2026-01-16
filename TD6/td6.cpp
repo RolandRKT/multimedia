@@ -81,22 +81,19 @@ struct maillage
 // Affiche un maillage avec sa transformation
 void displayMesh(maillage &m, glm::mat4 modelMatrix)
 {
-    // 1. Activation du shader
+    // Activation du shader
     glUseProgram(m.shader.progid);
 
-    // 2. Application des transformations
+    // Application des transformations
     modelMatrix = glm::scale(modelMatrix, glm::vec3(m.scale));
     modelMatrix = glm::translate(modelMatrix, glm::vec3(-m.x, -m.y, -m.z));
 
-    // 3. Envoi des variables Uniform
+    // envoi des variables
     glUniformMatrix4fv(m.shader.mid, 1, GL_FALSE, &modelMatrix[0][0]);
     glUniformMatrix4fv(m.shader.vid, 1, GL_FALSE, &view[0][0]);
     glUniformMatrix4fv(m.shader.pid, 1, GL_FALSE, &proj[0][0]);
 
-    // 4. Bind du VAO
     glBindVertexArray(m.vaoids);
-
-    // 5. Dessin
     glDrawElements(GL_TRIANGLES, m.nbtriangles * 3, GL_UNSIGNED_INT, 0);
 }
 
@@ -110,7 +107,7 @@ void display()
     float decal = 1.25f;
     float globalScale = 2.0f;
 
-    //pour me repérer
+    //pour me repérer :
     // --- Objet 0 (Bas Gauche) ---
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-decal, -decal, 0.0f));
@@ -192,7 +189,8 @@ void special(int key, int x, int y)
 maillage initVAOs(shaderProg shader, std::string meshFile)
 {
     maillage currentMaillage;
-    currentMaillage.shader = shader; // On lui associe son shader
+    // On lui associe son shader
+    currentMaillage.shader = shader; 
 
     unsigned int vboids[4];
 
@@ -208,22 +206,21 @@ maillage initVAOs(shaderProg shader, std::string meshFile)
 
     ifs >> off;
     ifs >> nbpoints;
-    ifs >> currentMaillage.nbtriangles; // On stocke dans la structure
+    ifs >> currentMaillage.nbtriangles;
     ifs >> tmp;
 
-    std::cout << "Loading " << meshFile << " - Triangles: " << currentMaillage.nbtriangles << std::endl;
+    //débugage pour l'erreur d'affichage
+    //std::cout << "Loading " << meshFile << " - Triangles: " << currentMaillage.nbtriangles << std::endl;
 
     std::vector<float> vertices(nbpoints * 3);
     std::vector<unsigned int> indices(currentMaillage.nbtriangles * 3);
     std::vector<float> normals(nbpoints * 3);
 
-    // Lecture des vertices
     for (unsigned int i = 0; i < vertices.size(); ++i)
     {
         ifs >> vertices[i];
     }
 
-    // Lecture des indices
     for (unsigned int i = 0; i < currentMaillage.nbtriangles; ++i)
     {
         ifs >> tmp;
@@ -232,7 +229,9 @@ maillage initVAOs(shaderProg shader, std::string meshFile)
         ifs >> indices[i * 3 + 2];
     }
 
-    // Calcul de la boîte englobante
+    /**
+     * Calcul de la boîte englobante du modèle
+     */
     float dx, dy, dz;
     float xmin, xmax, ymin, ymax, zmin, zmax;
 
@@ -256,24 +255,25 @@ maillage initVAOs(shaderProg shader, std::string meshFile)
             zmax = vertices[i * 3 + 2];
     }
 
-    // Centre de la boîte (stocké dans la structure)
+    // calcul du centre de la boîte englobante
     currentMaillage.x = (xmax + xmin) / 2.0f;
     currentMaillage.y = (ymax + ymin) / 2.0f;
     currentMaillage.z = (zmax + zmin) / 2.0f;
 
-    // Dimensions
+    // calcul des dimensions de la boîte englobante
     dx = xmax - xmin;
     dy = ymax - ymin;
     dz = zmax - zmin;
 
-    // Scale pour normaliser la taille (stocké dans la structure)
+    // calcul du coefficient de mise à l'échelle
     currentMaillage.scale = 1.0f / fmax(dx, fmax(dy, dz));
 
-    std::cout << "  Scale: " << currentMaillage.scale
-              << " Center: (" << currentMaillage.x << ", "
-              << currentMaillage.y << ", " << currentMaillage.z << ")" << std::endl;
+    //debuggage pour bug d'affichage des vaisseaux
+    // std::cout << "  Scale: " << currentMaillage.scale
+            //   << " Center: (" << currentMaillage.x << ", "
+            //   << currentMaillage.y << ", " << currentMaillage.z << ")" << std::endl;
 
-    // Calcul des normales
+    // Calcul des normales.
     for (std::size_t i = 0; i < indices.size(); i += 3)
     {
         auto x0 = vertices[3 * indices[i]] - vertices[3 * indices[i + 1]];
@@ -306,7 +306,6 @@ maillage initVAOs(shaderProg shader, std::string meshFile)
         normals[3 * indices[i + 2] + 2] += z01;
     }
 
-    // Normalisation des normales
     for (std::size_t i = 0; i < normals.size(); i += 3)
     {
         auto &x = normals[i];
@@ -319,24 +318,20 @@ maillage initVAOs(shaderProg shader, std::string meshFile)
         z *= norminv;
     }
 
-    // Création du VAO (ATTENTION: & devant currentMaillage.vaoids)
     glGenVertexArrays(1, &currentMaillage.vaoids);
     glBindVertexArray(currentMaillage.vaoids);
 
     glGenBuffers(4, vboids);
 
-    // VBO vertices
     glBindBuffer(GL_ARRAY_BUFFER, vboids[0]);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
     auto pos = glGetAttribLocation(shader.progid, "in_pos");
     glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(pos);
 
-    // VBO indices
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboids[2]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
-    // VBO normales
     glBindBuffer(GL_ARRAY_BUFFER, vboids[3]);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float), normals.data(), GL_STATIC_DRAW);
     auto normal = glGetAttribLocation(shader.progid, "in_normal");
@@ -348,7 +343,6 @@ maillage initVAOs(shaderProg shader, std::string meshFile)
     return currentMaillage; // On retourne la structure
 }
 
-// ========== FONCTION initShaders ==========
 // Compile et lie les shaders, retourne un shaderProg
 shaderProg initShaders(std::string shadVert, std::string shadFrag)
 {
@@ -358,7 +352,6 @@ shaderProg initShaders(std::string shadVert, std::string shadFrag)
     int logsize;
     std::string log;
 
-    // Ouverture des fichiers shaders
     std::ifstream vs_ifs(MY_SHADER_PATH + shadVert);
     std::ifstream fs_ifs(MY_SHADER_PATH + shadFrag);
 
@@ -367,7 +360,6 @@ shaderProg initShaders(std::string shadVert, std::string shadFrag)
         throw std::runtime_error("Fichiers shaders non trouvé.");
     }
 
-    // Lecture du vertex shader
     auto begin = vs_ifs.tellg();
     vs_ifs.seekg(0, std::ios::end);
     auto end = vs_ifs.tellg();
@@ -378,7 +370,6 @@ shaderProg initShaders(std::string shadVert, std::string shadFrag)
     vs.resize(size);
     vs_ifs.read(&vs[0], size);
 
-    // Lecture du fragment shader
     begin = fs_ifs.tellg();
     fs_ifs.seekg(0, std::ios::end);
     end = fs_ifs.tellg();
@@ -389,12 +380,12 @@ shaderProg initShaders(std::string shadVert, std::string shadFrag)
     fs.resize(size);
     fs_ifs.read(&fs[0], size);
 
-    // Compilation du vertex shader
     vsid = glCreateShader(GL_VERTEX_SHADER);
     char const *vs_char = vs.c_str();
     glShaderSource(vsid, 1, &vs_char, nullptr);
     glCompileShader(vsid);
 
+    // Get shader compilation status.
     glGetShaderiv(vsid, GL_COMPILE_STATUS, &status);
     if (!status)
     {
@@ -409,6 +400,8 @@ shaderProg initShaders(std::string shadVert, std::string shadFrag)
     fsid = glCreateShader(GL_FRAGMENT_SHADER);
     char const *fs_char = fs.c_str();
     glShaderSource(fsid, 1, &fs_char, nullptr);
+    
+    // Get shader compilation status.
     glCompileShader(fsid);
 
     glGetShaderiv(fsid, GL_COMPILE_STATUS, &status);
@@ -421,13 +414,11 @@ shaderProg initShaders(std::string shadVert, std::string shadFrag)
         std::cerr << log << std::endl;
     }
 
-    // Création et linkage du programme shader
     sp.progid = glCreateProgram();
     glAttachShader(sp.progid, vsid);
     glAttachShader(sp.progid, fsid);
     glLinkProgram(sp.progid);
 
-    // Récupération des locations des uniforms (dans la STRUCTURE sp)
     sp.mid = glGetUniformLocation(sp.progid, "m");
     sp.vid = glGetUniformLocation(sp.progid, "v");
     sp.pid = glGetUniformLocation(sp.progid, "p");
@@ -463,9 +454,6 @@ int main(int argc, char *argv[])
 
     glEnable(GL_DEPTH_TEST);
     check_gl_error();
-
-    // ========== INITIALISATION DES 4 MAILLAGES ==========
-    std::cout << "=== Initialisation des shaders et maillages ===" << std::endl;
 
     // ========== INITIALISATION DES 4 MAILLAGES ==========
     std::cout << "=== Initialisation des shaders et maillages ===" << std::endl;

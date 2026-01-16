@@ -1,33 +1,24 @@
-Start testing: Jan 16 19:01 CET
+Start testing: Jan 16 19:11 CET
 ----------------------------------------------------------
 1/1 Testing: SimpleTest
 1/1 Test: SimpleTest
 Command: "/home/eliyhuw/Documents/iut/multimedia/TD6/b/td"
 Directory: /home/eliyhuw/Documents/iut/multimedia/TD6/b
-"SimpleTest" start time: Jan 16 19:01 CET
+"SimpleTest" start time: Jan 16 19:11 CET
 Output:
 ----------------------------------------------------------
 === Initialisation des shaders et maillages ===
-=== Initialisation des shaders et maillages ===
 Shader compiled: /shaders/phong.vert.glsl + /shaders/phong.frag.glsl
-Loading /meshes/space_shuttle2.off - Triangles: 3952
-  Scale: 0.00447504 Center: (-111.769, 0, 18.796)
 Shader compiled: /shaders/phong.vert.glsl + /shaders/toon.frag.glsl
-Loading /meshes/space_station2.off - Triangles: 10237
-  Scale: 0.0490773 Center: (0.00399995, 0.00300002, 1.495)
 Shader compiled: /shaders/phong.vert.glsl + /shaders/phongVert.frag.glsl
-Loading /meshes/milleniumfalcon.off - Triangles: 178238
-  Scale: 0.00359496 Center: (0.646999, 26.5745, 140.336)
 Shader compiled: /shaders/phong.vert.glsl + /shaders/phongRouge.frag.glsl
-Loading /meshes/rabbit.off - Triangles: 8100
-  Scale: 6.42372 Center: (-0.0168535, 0.110119, -0.00152)
 === Affichage en cours ===
 <end of output>
-Test time =   7.53 sec
+Test time =   1.82 sec
 ----------------------------------------------------------
 Test Passed.
-"SimpleTest" end time: Jan 16 19:01 CET
-"SimpleTest" time elapsed: 00:00:07
+"SimpleTest" end time: Jan 16 19:11 CET
+"SimpleTest" time elapsed: 00:00:01
 ----------------------------------------------------------
 
-End testing: Jan 16 19:01 CET
+End testing: Jan 16 19:11 CET
